@@ -14,7 +14,17 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
+  private executeValidation({ title, value, type }: Request) {
+    if (!title || !value || !type) {
+      throw Error('Invalid entries.');
+    }
+    if (type !== 'income' && type !== 'outcome') {
+      throw Error('Invalid transaction type.');
+    }
+  }
+
   public execute({ title, value, type }: Request): Transaction {
+    this.executeValidation({ title, value, type });
     const transaction = this.transactionsRepository.create({
       title,
       value,
